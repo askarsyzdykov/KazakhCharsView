@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".MainActivity">
+
+    <View
+        android:id="@+id/focus_thief"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <EditText
+        android:id="@+id/etText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/etText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <kz.mobdev.library.KazCharsView
+        android:id="@+id/kazCharsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:kcv_allCaps="false"
+        app:kcv_fontSize="16sp"
+        app:kcv_type="cyrillic" />
+
+    <Switch
+        android:id="@+id/switchAllCaps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:switchPadding="8dp"
+        android:text="All caps" />
+
+    <Switch
+        android:id="@+id/switchType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:switchPadding="8dp"
+        android:text="Cyrillic/Latin" />
+
+</LinearLayout>
