@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="KazCharsView">
-        <attr name="kcv_autoFillCurrentEditText" format="boolean" />
         <attr name="kcv_allCaps" format="boolean" />
         <attr name="kcv_fontSize" format="dimension" />
         <attr name="kcv_textColor" format="color" />
