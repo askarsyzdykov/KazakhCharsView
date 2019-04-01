@@ -3,7 +3,6 @@ package kz.mobdev.library
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -15,10 +14,15 @@ import android.widget.TextView
  * Created by Askar Syzdykov on 4/24/18.
  */
 
-class KazCharsView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) : LinearLayout(context, attrs) {
+class KazCharsView(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0
+) : LinearLayout(context, attrs) {
 
-    private val cyrillicChars = arrayOf("ә", "ө", "қ", "ғ", "і", "һ", "ң", "ұ", "ү")
-    private val latinChars = arrayOf("á", "ó", "q", "ǵ", "i", "h", "ń", "u", "ú")
+    private val cyrillicChars = arrayOf("ә", "і", "ң", "ғ", "ү", "ұ", "қ", "ө", "һ")
+    private val latinChars = arrayOf("á", "i", "ń", "ǵ", "ú", "u", "q", "ó", "h")
 
     var kazCharsClickListener: KazCharsClickListener? = null
 
@@ -36,13 +40,12 @@ class KazCharsView(context: Context, attrs: AttributeSet? = null, defStyleAttr: 
             }
         }
 
-    var type: Type? = Type.CYRILLIC
+    var type: Type = Type.CYRILLIC
         set(value) {
             field = value
             val chars = when (type) {
                 Type.CYRILLIC -> cyrillicChars
                 Type.LATIN -> latinChars
-                else -> cyrillicChars
             }
             (0 until childCount).forEachIndexed { index, it ->
                 val b = getChildAt(it) as TextView
@@ -50,13 +53,18 @@ class KazCharsView(context: Context, attrs: AttributeSet? = null, defStyleAttr: 
             }
         }
 
-    enum class Type(val type: Int) {
-        CYRILLIC(0),
-        LATIN(1);
-
-        companion object {
-            fun valueOf(value: Int): Type? = Type.values().find { it.type == value }
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.KazCharsView, defStyleAttr, defStyleRes)
+        (0 until a.indexCount).forEach { i ->
+            val attr = a.getIndex(i)
+            when (attr) {
+                R.styleable.KazCharsView_kcv_allCaps -> isAllCaps = a.getBoolean(attr, false)
+                R.styleable.KazCharsView_kcv_fontSize -> fontSize = a.getDimensionPixelSize(attr, 14)
+                R.styleable.KazCharsView_kcv_textColor -> textColor = a.getColor(attr, Color.WHITE)
+                R.styleable.KazCharsView_kcv_type -> type = Type.valueOf(a.getInt(attr, Type.CYRILLIC.type))!!
+            }
         }
+        a.recycle()
     }
 
     constructor(context: Context, attrs: AttributeSet) : this(context, attrs, 0, 0) {
@@ -64,13 +72,11 @@ class KazCharsView(context: Context, attrs: AttributeSet? = null, defStyleAttr: 
     }
 
     private fun init() {
-        Log.d("KazCharsView", "Initialization")
-
         val density = context.resources.displayMetrics.density
         val paddingPixel = (8 * density).toInt()
 
         val layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-        val marginPixel = (1 * density).toInt()
+        val marginPixel = density.toInt()
         layoutParams.leftMargin = marginPixel
         layoutParams.rightMargin = marginPixel
 
@@ -100,8 +106,8 @@ class KazCharsView(context: Context, attrs: AttributeSet? = null, defStyleAttr: 
                     }
                     text = focusedView.text.toString()
                     val newText = text.substring(0, cursorPosition) +
-                            char.toString() +
-                            text.substring(cursorPosition, text.length)
+                        char.toString() +
+                        text.substring(cursorPosition, text.length)
                     focusedView.setText(newText)
                     focusedView.setSelection(cursorPosition + 1)
                 }
@@ -109,21 +115,16 @@ class KazCharsView(context: Context, attrs: AttributeSet? = null, defStyleAttr: 
         }
     }
 
-    init {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.KazCharsView, defStyleAttr, defStyleRes)
-        (0 until a.indexCount).forEach { i ->
-            val attr = a.getIndex(i)
-            when (attr) {
-                R.styleable.KazCharsView_kcv_allCaps -> isAllCaps = a.getBoolean(attr, false)
-                R.styleable.KazCharsView_kcv_fontSize -> fontSize = a.getDimensionPixelSize(attr, 14)
-                R.styleable.KazCharsView_kcv_textColor -> textColor = a.getColor(attr, Color.WHITE)
-                R.styleable.KazCharsView_kcv_type -> type = Type.valueOf(a.getInt(attr, Type.CYRILLIC.type))
-            }
-        }
-        a.recycle()
-    }
-
     interface KazCharsClickListener {
         fun onKazakhCharClick(view: View, letter: Char)
+    }
+
+    enum class Type(val type: Int) {
+        CYRILLIC(0),
+        LATIN(1);
+
+        companion object {
+            fun valueOf(value: Int): Type? = Type.values().find { it.type == value }
+        }
     }
 }
